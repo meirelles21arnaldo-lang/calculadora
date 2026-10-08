@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Compatibilidade</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 { margin-bottom: 20px; font-size: 1.5rem; color: #333; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff4b4b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #e03a3a; }
+        .result { margin-top: 20px; display: none; }
+        .metric { font-size: 2.5rem; font-weight: bold; color: #ff4b4b; }
+        .message { color: #555; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>💘 Calculadora de Compatibilidade</h1>
+    <input type="text" id="nome1" placeholder="Primeiro Nome">
+    <input type="text" id="nome2" placeholder="Segundo Nome">
+    <button onclick="processar()">Calcular</button>
+
+    <div id="resultado" class="result">
+        <div id="porcentagem" class="metric">0%</div>
+        <div id="mensagem" class="message"></div>
+    </div>
+</div>
+
+<script>
+function removerAcentos(texto) {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function calcularCompatibilidade(nome1, nome2) {
+    let n1 = removerAcentos(nome1).toUpperCase().trim();
+    let n2 = removerAcentos(nome2).toUpperCase().trim();
+
+    let nomesOrdenados = [n1, n2].sort();
+    let nomeJunto = nomesOrdenados.join("").replace(/ /g, "");
+
+    let frequencias = {};
+    let ordemUnica = [];
+    for (let char of nomeJunto) {
+        if (!(char in frequencias)) {
+            frequencias[char] = 0;
+            ordemUnica.push(char);
+        }
+        frequencias[char]++;
+    }
+
+    let vetor = ordemUnica.map(char => frequencias[char]);
+
+    while (vetor.length > 2) {
+        let novoVetor = [];
+        let i = 0, j = vetor.length - 1;
+        while (i < j) {
+            novoVetor.push(vetor[i] + vetor[j]);
+            i++; j--;
+        }
+        if (i === j) novoVetor.push(vetor[i]);
+        vetor = novoVetor;
+    }
+
+    let stringFinal = vetor.join("");
+    let resultado = 0;
+
+    if (stringFinal.length === 3) {
+        let d1 = parseInt(stringFinal[0]);
+        let d2 = stringFinal[1];
+        let d3 = parseInt(stringFinal[2]);
+        resultado = parseInt(`${d1 + d3}${d2}`);
+    } else if (vetor.length === 2) {
+        resultado = parseInt(`${vetor[0]}${vetor[1]}`);
+    } else {
+        resultado = vetor[0];
+    }
+
+    resultado = Math.min(resultado, 100);
+
+    let msg = "";
+    if (resultado < 10) msg = "Ugh, pouco compatível";
+    else if (resultado <= 25) msg = "Pouca chance";
+    else if (resultado < 50) msg = "Eu tentaria outro";
+    else if (resultado === 50) msg = "Cara ou coroa? (Do meu jeito)";
+    else if (resultado <= 75) msg = "Com um pouco de esforço funciona, não desista!";
+    else if (resultado <= 90) msg = "Pouco esforço, é só querer!";
+    else msg = "Combinação quase perfeita! Vá em frente!";
+
+    return { porcentagem: resultado, mensagem: msg };
+}
+
+function processar() {
+    const nome1 = document.getElementById("nome1").value;
+    const nome2 = document.getElementById("nome2").value;
+
+    if (!nome1 || !nome2) {
+        alert("Por favor, preencha os dois nomes!");
+        return;
+    }
+
+    const res = calcularCompatibilidade(nome1, nome2);
+    document.getElementById("porcentagem").innerText = `${res.porcentagem}%`;
+    document.getElementById("mensagem").innerText = res.mensagem;
+    document.getElementById("resultado").style.display = "block";
+}
+</script>
+
+</body>
+</html>
