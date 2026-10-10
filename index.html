@@ -1,71 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Compatibilidade</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        h1 { margin-bottom: 20px; font-size: 1.5rem; color: #333; }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #ff4b4b;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover { background-color: #e03a3a; }
-        .result { margin-top: 20px; display: none; }
-        .metric { font-size: 2.5rem; font-weight: bold; color: #ff4b4b; }
-        .message { color: #555; margin-top: 5px; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Compatibilidade</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 { margin-bottom: 20px; font-size: 1.5rem; color: #333; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff4b4b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #e03a3a; }
+        .result { margin-top: 20px; display: none; }
+        .metric { font-size: 2.5rem; font-weight: bold; color: #ff4b4b; }
+        .message { color: #555; margin-top: 5px; }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>💘 Calculadora de Compatibilidade</h1>
-    <input type="text" id="nome1" placeholder="Primeiro Nome">
-    <input type="text" id="nome2" placeholder="Segundo Nome">
-    <button onclick="processar()">Calcular</button>
+    <h1>💘 Calculadora de Compatibilidade</h1>
+    <input type="text" id="nome1" placeholder="Primeiro Nome">
+    <input type="text" id="nome2" placeholder="Segundo Nome">
+    <button onclick="processar()">Calcular</button>
 
-    <div id="resultado" class="result">
-        <div id="porcentagem" class="metric">0%</div>
-        <div id="mensagem" class="message"></div>
-    </div>
+    <div id="resultado" class="result">
+        <div id="porcentagem" class="metric">0%</div>
+        <div id="mensagem" class="message"></div>
+    </div>
 </div>
 
 <script>
 function removerAcentos(texto) {
-    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 function calcularCompatibilidade(nome1, nome2) {
@@ -98,7 +98,6 @@ function calcularCompatibilidade(nome1, nome2) {
         vetor = novoVetor;
     }
 
-    // Calcula o resultado base a partir do vetor
     let resultado = 0;
     if (vetor.length === 2) {
         resultado = parseInt(`${vetor[0]}${vetor[1]}`);
@@ -106,7 +105,7 @@ function calcularCompatibilidade(nome1, nome2) {
         resultado = vetor[0];
     }
 
-    // Se der mais de 100, aplica a lógica de redução com base nos dígitos
+    // Aplica a regra para quando o valor for maior que 100
     while (resultado > 100) {
         let stringFinal = resultado.toString();
         if (stringFinal.length === 3) {
@@ -115,7 +114,6 @@ function calcularCompatibilidade(nome1, nome2) {
             let d3 = parseInt(stringFinal[2]);
             resultado = parseInt(`${d1 + d3}${d2}`);
         } else {
-            // Caso tenha 4 dígitos ou mais, reduz juntando o vetor original
             resultado = parseInt(vetor.join(""));
             break;
         }
@@ -132,21 +130,20 @@ function calcularCompatibilidade(nome1, nome2) {
 
     return { porcentagem: resultado, mensagem: msg };
 }
-}
 
 function processar() {
-    const nome1 = document.getElementById("nome1").value;
-    const nome2 = document.getElementById("nome2").value;
+    const nome1 = document.getElementById("nome1").value;
+    const nome2 = document.getElementById("nome2").value;
 
-    if (!nome1 || !nome2) {
-        alert("Por favor, preencha os dois nomes!");
-        return;
-    }
+    if (!nome1 || !nome2) {
+        alert("Por favor, preencha os dois nomes!");
+        return;
+    }
 
-    const res = calcularCompatibilidade(nome1, nome2);
-    document.getElementById("porcentagem").innerText = `${res.porcentagem}%`;
-    document.getElementById("mensagem").innerText = res.mensagem;
-    document.getElementById("resultado").style.display = "block";
+    const res = calcularCompatibilidade(nome1, nome2);
+    document.getElementById("porcentagem").innerText = `${res.porcentagem}%`;
+    document.getElementById("mensagem").innerText = res.mensagem;
+    document.getElementById("resultado").style.display = "block";
 }
 </script>
 
